@@ -10,7 +10,7 @@ import numpy as np
 import scipy.io
 import torch
 
-from .features import FEATURE_NAMES, KPZFeatureBuilder
+from model.NORS.features_kpz import FEATURE_NAMES, KPZFeatureBuilder
 
 
 @dataclass(frozen=True)

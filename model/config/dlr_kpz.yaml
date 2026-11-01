@@ -1,0 +1,49 @@
+model: DLR
+equation: kpz
+
+# Recorded KPZ DLR run. The seven base features match NORS; width is 8.
+data_path: /workspace/results/KPZ+/KPZ+renosigma01_xi_lam005_trc128_1200.mat
+cache_path: null
+rebuild_features: false
+
+max_time: 51
+sub_t: 1
+sub_x: 1
+spatial_points: 128
+diffusion: 1.0
+noise_scale: 0.1
+renorm_constant: 128
+
+feature_batch_size: 64
+ntrain: 840
+nval: 180
+ntest: 180
+batch_size: 10
+gradient_accumulation_steps: 1
+num_workers: 0
+
+epochs: 1000
+learning_rate: 0.001
+weight_decay: 0.0001
+modes_x: 16
+modes_t: 16
+width: 8
+depth: 4
+time_padding: 6
+latent_width: 32
+
+scheduler_patience: 50
+scheduler_factor: 0.1
+scheduler_threshold: 1.0e-6
+early_stopping: 80
+delta: 0.0002
+print_every: 20
+seed: 3407
+device: cuda
+
+output_dir: /workspace/result/DLR_KPZ/seed_3407
+checkpoint_name: DLR_KPZ_sigma01_lam005_trc128_best_val.pt
+
+hydra:
+  job:
+    chdir: false

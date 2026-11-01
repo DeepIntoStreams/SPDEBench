@@ -12,7 +12,7 @@ import numpy as np
 import scipy.io
 import torch
 
-from .features import FEATURE_NAMES, Phi42FeatureBuilder
+from model.NORS.features_phi42 import FEATURE_NAMES, Phi42FeatureBuilder
 
 
 @dataclass(frozen=True)

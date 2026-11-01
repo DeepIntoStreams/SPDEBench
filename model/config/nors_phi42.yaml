@@ -1,0 +1,48 @@
+model: NORS
+equation: phi42
+
+# Recorded refined Phi42 run. Override data_path when the file lives elsewhere.
+data_path: /workspace/results/Phi42+/Phi42+_xi_eps128_sigma0.1_seed42_1200.h5
+cache_path: null
+target_cache_path: null
+rebuild_features: false
+
+max_time: 250
+sub_t: 5
+sub_x: 1
+diffusion: 1.0
+noise_scale: 0.1
+
+feature_batch_size: 1
+ntrain: 840
+nval: 180
+ntest: 180
+batch_size: 1
+gradient_accumulation_steps: 10
+num_workers: 0
+
+epochs: 1000
+learning_rate: 0.001
+weight_decay: 0.0001
+modes_x: 16
+modes_y: 16
+modes_t: 16
+width: 32
+depth: 4
+time_padding: 6
+
+scheduler_patience: 50
+scheduler_factor: 0.1
+scheduler_threshold: 1.0e-6
+early_stopping: 80
+delta: 0.0002
+print_every: 20
+seed: 3407
+device: cuda
+
+output_dir: /workspace/result/NORS_new_Phi42/seed_3407
+checkpoint_name: NORS_new_Phi42_eps128_best_val.pt
+
+hydra:
+  job:
+    chdir: false

@@ -169,6 +169,7 @@ def main():
 
         # collect per-batch scores for each metric
         metric_scores = {m.name: [] for m in metrics}
+        rmse_element_counts = {}
         num_batches = (n_test + batch_size - 1) // batch_size
 
         for bi in range(num_batches):
@@ -207,6 +208,9 @@ def main():
                     xr_for = xr
                     xp_for = xp.squeeze(1) if (xp.ndim == 4 and xp.shape[1] == 1) else xp
                     val = m.measure(xr_for, xp_for)
+                    if isinstance(m, RMSEMetric):
+                        compared_shape = torch.broadcast_shapes(xr_for.shape, xp_for.shape)
+                        rmse_element_counts.setdefault(m.name, []).append(compared_shape.numel())
 
                 if isinstance(val, torch.Tensor):
                     val = val.mean()   # ← THIS FIX
@@ -215,8 +219,19 @@ def main():
                     metric_scores[m.name].append(float(val))
 
 
-        # average per-metric across batches and remap keys
-        avg_scores = {mname: torch.tensor(sum(vals) / len(vals)) for mname, vals in metric_scores.items()}
+        avg_scores = {}
+        for mname, vals in metric_scores.items():
+            counts = rmse_element_counts.get(mname, ())
+            total_count = sum(counts)
+            if total_count:
+                # Pool squared errors by the number of compared elements before taking the root.
+                mean_squared_error = sum(
+                    val ** 2 * (count / total_count) for val, count in zip(vals, counts)
+                )
+                score = mean_squared_error ** 0.5
+            else:
+                score = sum(vals) / len(vals)
+            avg_scores[mname] = torch.tensor(score)
         results[filepath] = {name_map[k]: v for k, v in avg_scores.items()}
 
     # Print table
